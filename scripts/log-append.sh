@@ -15,14 +15,17 @@ if [ ! -f "$LOG" ]; then
 fi
 
 # Append entry (prepend after the header so newest is on top)
-# Strategy: insert after line 2 (after "# Wiki Change Log\n")
-ENTRY="## $DATE\n\n- $MESSAGE\n"
-
-# Use sed to insert after the first blank line (after header)
-sed -i "2a\\
-\\
-## $DATE\\
-\\
-- $MESSAGE" "$LOG"
+# Cross-platform (BSD/GNU sed): rewrite file via tmp instead of sed -i
+TMP="$LOG.tmp"
+{
+  echo "# Wiki Change Log"
+  echo ""
+  echo "## $DATE"
+  echo ""
+  echo "- $MESSAGE"
+  echo ""
+  # Append existing entries below new entry (skip the original header on first 2 lines)
+  tail -n +3 "$LOG" 2>/dev/null
+} > "$TMP" && mv "$TMP" "$LOG"
 
 echo "Log appended: $DATE — $MESSAGE"
