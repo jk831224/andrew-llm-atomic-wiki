@@ -36,3 +36,6 @@ Thumbs.db
 .idea/
 .vscode/
 .obsidian/
+
+# ─── Personal Claude Code settings ───
+.claude/settings.local.json
